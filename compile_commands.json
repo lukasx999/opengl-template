@@ -1,0 +1,16 @@
+[
+ {
+  "directory": "/home/lukas/code/repos/opengl-template",
+  "arguments": [
+   "clang++",
+   "-Wall",
+   "-Wextra",
+   "-I./glad/include/",
+   "-c",
+   "main.cc",
+   "-o",
+   "main.o"
+  ],
+  "file": "main.cc"
+ }
+]
