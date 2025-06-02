@@ -1,5 +1,5 @@
 CXX=clang++
-CXXFLAGS=-Wall -Wextra -I./glad/include/
+CXXFLAGS=-Wall -Wextra -I./glad/include/ -Og -ggdb -std=c++23 -pedantic
 LIBS=-lglfw -lGL -lglm
 
 OBJS=main.o
@@ -9,6 +9,9 @@ gl: $(OBJS)
 
 %.o: %.cc Makefile $(DEPS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+run: gl
+	./$<
 
 clean:
 	rm *.o gl
