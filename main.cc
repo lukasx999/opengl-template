@@ -15,8 +15,8 @@
 #include <glad/gl.h>
 
 
-constexpr int width  = 1600;
-constexpr int height = 900;
+constexpr int WIDTH  = 1600;
+constexpr int HEIGHT = 900;
 
 
 struct Vertex {
@@ -56,7 +56,7 @@ int main() {
     });
 
     glfwInit();
-    GLFWwindow *window = glfwCreateWindow(width, height, "gl", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "gl", nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
