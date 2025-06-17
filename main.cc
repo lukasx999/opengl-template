@@ -15,9 +15,15 @@
 #include <glad/gl.h>
 
 
-constexpr int WIDTH  = 1600;
-constexpr int HEIGHT = 900;
+static constexpr int WIDTH  = 1600;
+static constexpr int HEIGHT = 900;
+static constexpr const char *SHADER_SRC_VERT = "shader.vert";
+static constexpr const char *SHADER_SRC_FRAG = "shader.frag";
 
+struct State {
+    State()
+    { }
+};
 
 struct Vertex {
     glm::vec3 m_pos;
@@ -41,21 +47,15 @@ static void process_inputs(GLFWwindow *window) {
         glfwSetWindowShouldClose(window, 1);
 }
 
-int main() {
-
-    std::array vertices {
-        Vertex({ -0.5f, -0.5f, 0.0f }),
-        Vertex({  0.5f, -0.5f, 0.0f }),
-        Vertex({  0.0f,  0.5f, 0.0f })
-    };
-
-
-    glfwSetErrorCallback([](int _error_code, const char* description) {
-        (void) _error_code;
-        std::println(stderr, "GLFW ERROR: {}", description);
+[[nodiscard]] static GLFWwindow *setup_glfw() {
+    glfwSetErrorCallback([]([[maybe_unused]] int error_code, const char *desc) {
+        std::println(stderr, "GLFW Error: {}", desc);
     });
 
     glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "gl", nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
@@ -63,21 +63,44 @@ int main() {
     gladLoadGL(glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(
         window,
-        [](GLFWwindow* _win, int w, int h) {
-            (void) _win;
+        []([[maybe_unused]] GLFWwindow* window, int w, int h) {
             glViewport(0, 0, w, h);
         }
     );
 
+    return window;
+}
+
+int main() {
+
+    State state;
+
+    std::array vertices {
+        Vertex({ -0.5f, -0.5f, 0.0f }),
+        Vertex({  0.5f, -0.5f, 0.0f }),
+        Vertex({  0.0f,  0.5f, 0.0f })
+    };
+
+    GLFWwindow *window = setup_glfw();
+
+    glDebugMessageCallback([](
+        [[maybe_unused]] GLenum src,
+        [[maybe_unused]] GLenum type,
+        [[maybe_unused]] GLuint id,
+        [[maybe_unused]] GLenum severity,
+        [[maybe_unused]] GLsizei len,
+        const char *msg,
+        [[maybe_unused]] const void *args
+    ) { std::println(stderr, "OpenGL Error: {}", msg); }, nullptr);
+
     GLuint vert = glCreateShader(GL_VERTEX_SHADER);
-    std::string vert_src = read_entire_file("shader.vert");
+    std::string vert_src = read_entire_file(SHADER_SRC_VERT);
     auto vert_cstr = vert_src.c_str();
     glShaderSource(vert, 1, &vert_cstr, NULL);
     glCompileShader(vert);
 
-
     GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string frag_src = read_entire_file("shader.frag");
+    std::string frag_src = read_entire_file(SHADER_SRC_FRAG);
     auto frag_cstr = frag_src.c_str();
     glShaderSource(frag, 1, &frag_cstr, NULL);
     glCompileShader(frag);
@@ -114,6 +137,8 @@ int main() {
     );
     glEnableVertexAttribArray(a_pos);
 
+    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
