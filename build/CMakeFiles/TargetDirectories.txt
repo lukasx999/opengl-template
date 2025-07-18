@@ -1,0 +1,3 @@
+/home/lukas/code/repos/opengl-template/build/CMakeFiles/proj.dir
+/home/lukas/code/repos/opengl-template/build/CMakeFiles/edit_cache.dir
+/home/lukas/code/repos/opengl-template/build/CMakeFiles/rebuild_cache.dir

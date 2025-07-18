@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/lukas/code/repos/opengl-template/build",
+  "command": "/usr/bin/clang++ -I/home/lukas/code/repos/opengl-template/glad/include -Wall -Wextra -pedantic -Og -ggdb -std=gnu++23 -o CMakeFiles/proj.dir/main.cc.o -c /home/lukas/code/repos/opengl-template/main.cc",
+  "file": "/home/lukas/code/repos/opengl-template/main.cc",
+  "output": "CMakeFiles/proj.dir/main.cc.o"
+}
+]

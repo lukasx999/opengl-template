@@ -15,40 +15,30 @@
 #include <glad/gl.h>
 
 
+
 static constexpr int WIDTH  = 1600;
 static constexpr int HEIGHT = 900;
-static constexpr const char *SHADER_SRC_VERT = "shader.vert";
-static constexpr const char *SHADER_SRC_FRAG = "shader.frag";
 
-struct State {
-    State()
-    { }
-};
+
 
 struct Vertex {
     glm::vec3 m_pos;
-
-    Vertex(glm::vec3 pos)
-    : m_pos(pos)
-    { }
-
+    Vertex(glm::vec3 pos) : m_pos(pos) { }
 };
 
-[[nodiscard]] static std::string read_entire_file(const char *filename) {
+[[nodiscard]] static std::string read_entire_file(const char* filename) {
     std::ifstream file(filename);
-    return std::string(
-        (std::istreambuf_iterator<char>(file)),
-        (std::istreambuf_iterator<char>())
-    );
+    return std::string((std::istreambuf_iterator<char>(file)),
+                       (std::istreambuf_iterator<char>()));
 }
 
-static void process_inputs(GLFWwindow *window) {
+static void process_inputs(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, 1);
 }
 
-[[nodiscard]] static GLFWwindow *setup_glfw() {
-    glfwSetErrorCallback([]([[maybe_unused]] int error_code, const char *desc) {
+[[nodiscard]] static GLFWwindow* setup_glfw() {
+    glfwSetErrorCallback([]([[maybe_unused]] int error_code, char const* desc) {
         std::println(stderr, "GLFW Error: {}", desc);
     });
 
@@ -62,8 +52,7 @@ static void process_inputs(GLFWwindow *window) {
     glfwSwapInterval(1);
     gladLoadGL(glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(
-        window,
-        []([[maybe_unused]] GLFWwindow* window, int w, int h) {
+        window, []([[maybe_unused]] GLFWwindow* window, int w, int h) {
             glViewport(0, 0, w, h);
         }
     );
@@ -73,15 +62,13 @@ static void process_inputs(GLFWwindow *window) {
 
 int main() {
 
-    State state;
-
     std::array vertices {
         Vertex({ -0.5f, -0.5f, 0.0f }),
         Vertex({  0.5f, -0.5f, 0.0f }),
         Vertex({  0.0f,  0.5f, 0.0f })
     };
 
-    GLFWwindow *window = setup_glfw();
+    GLFWwindow* window = setup_glfw();
 
     glDebugMessageCallback([](
         [[maybe_unused]] GLenum src,
@@ -89,18 +76,18 @@ int main() {
         [[maybe_unused]] GLuint id,
         [[maybe_unused]] GLenum severity,
         [[maybe_unused]] GLsizei len,
-        const char *msg,
-        [[maybe_unused]] const void *args
+        const char* msg,
+        [[maybe_unused]] const void* args
     ) { std::println(stderr, "OpenGL Error: {}", msg); }, nullptr);
 
     GLuint vert = glCreateShader(GL_VERTEX_SHADER);
-    std::string vert_src = read_entire_file(SHADER_SRC_VERT);
+    std::string vert_src = read_entire_file("shader.vert");
     auto vert_cstr = vert_src.c_str();
     glShaderSource(vert, 1, &vert_cstr, NULL);
     glCompileShader(vert);
 
     GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string frag_src = read_entire_file(SHADER_SRC_FRAG);
+    std::string frag_src = read_entire_file("shader.frag");
     auto frag_cstr = frag_src.c_str();
     glShaderSource(frag, 1, &frag_cstr, NULL);
     glCompileShader(frag);
@@ -119,22 +106,12 @@ int main() {
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        vertices.size() * sizeof(Vertex),
-        vertices.data(),
-        GL_STATIC_DRAW
-    );
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex),
+                 vertices.data(), GL_STATIC_DRAW);
 
     GLuint a_pos = glGetAttribLocation(program, "a_pos");
-    glVertexAttribPointer(
-        a_pos,
-        3,
-        GL_FLOAT,
-        false,
-        sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, m_pos))
-    );
+    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, sizeof(Vertex),
+                          reinterpret_cast<void*>(offsetof(Vertex, m_pos)));
     glEnableVertexAttribArray(a_pos);
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
