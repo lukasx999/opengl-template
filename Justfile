@@ -6,3 +6,7 @@ build: configure
 
 run: build
     ./build/proj
+
+check:
+    glslangValidator shader.vert
+    glslangValidator shader.frag

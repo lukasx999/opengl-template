@@ -14,12 +14,8 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 
-
-
 static constexpr int WIDTH  = 1600;
 static constexpr int HEIGHT = 900;
-
-
 
 struct Vertex {
     glm::vec3 m_pos;
@@ -30,6 +26,31 @@ struct Vertex {
     std::ifstream file(filename);
     return std::string((std::istreambuf_iterator<char>(file)),
                        (std::istreambuf_iterator<char>()));
+}
+
+[[nodiscard]] static
+GLuint create_shader_program(const char* vertex_src, const char* fragment_src) {
+
+    GLuint vert = glCreateShader(GL_VERTEX_SHADER);
+    std::string vert_src = read_entire_file(vertex_src);
+    auto vert_cstr = vert_src.c_str();
+    glShaderSource(vert, 1, &vert_cstr, nullptr);
+    glCompileShader(vert);
+
+    GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
+    std::string frag_src = read_entire_file(fragment_src);
+    auto frag_cstr = frag_src.c_str();
+    glShaderSource(frag, 1, &frag_cstr, nullptr);
+    glCompileShader(frag);
+
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vert);
+    glAttachShader(program, frag);
+    glLinkProgram(program);
+    glDeleteShader(vert);
+    glDeleteShader(frag);
+
+    return program;
 }
 
 static void process_inputs(GLFWwindow* window) {
@@ -53,7 +74,7 @@ static void process_inputs(GLFWwindow* window) {
     glfwSwapInterval(1);
     gladLoadGL(glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(
-        window, []([[maybe_unused]] GLFWwindow* window, int w, int h) {
+        window, []([[maybe_unused]] GLFWwindow* win, int w, int h) {
             glViewport(0, 0, w, h);
         }
     );
@@ -81,24 +102,7 @@ int main() {
         [[maybe_unused]] const void* args
     ) { std::println(stderr, "OpenGL Error: {}", msg); }, nullptr);
 
-    GLuint vert = glCreateShader(GL_VERTEX_SHADER);
-    std::string vert_src = read_entire_file("shader.vert");
-    auto vert_cstr = vert_src.c_str();
-    glShaderSource(vert, 1, &vert_cstr, NULL);
-    glCompileShader(vert);
-
-    GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string frag_src = read_entire_file("shader.frag");
-    auto frag_cstr = frag_src.c_str();
-    glShaderSource(frag, 1, &frag_cstr, NULL);
-    glCompileShader(frag);
-
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vert);
-    glAttachShader(program, frag);
-    glLinkProgram(program);
-    glDeleteShader(vert);
-    glDeleteShader(frag);
+    GLuint program = create_shader_program("shader.vert", "shader.frag");
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -111,8 +115,8 @@ int main() {
                  vertices.data(), GL_STATIC_DRAW);
 
     GLuint a_pos = glGetAttribLocation(program, "a_pos");
-    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, sizeof(Vertex),
-                          reinterpret_cast<void*>(offsetof(Vertex, m_pos)));
+    void* offset = reinterpret_cast<void*>(offsetof(Vertex, m_pos));
+    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, sizeof(Vertex), offset);
     glEnableVertexAttribArray(a_pos);
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
