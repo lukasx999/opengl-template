@@ -85,9 +85,9 @@ static void process_inputs(GLFWwindow* window) {
 int main() {
 
     std::array vertices {
-        Vertex({ -0.5f, -0.5f, 0.0f }),
-        Vertex({  0.5f, -0.5f, 0.0f }),
-        Vertex({  0.0f,  0.5f, 0.0f })
+        Vertex({ -0.5f, -0.5f, 0.0f }), // bottom-left
+        Vertex({  0.5f, -0.5f, 0.0f }), // bottom-right
+        Vertex({  0.0f,  0.5f, 0.0f }), // top
     };
 
     GLFWwindow* window = setup_glfw();
