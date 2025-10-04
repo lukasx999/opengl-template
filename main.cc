@@ -18,12 +18,14 @@ struct Vertex {
     Vertex(glm::vec3 pos) : m_pos(pos) { }
 };
 
-char shader_vertex[] = {
+constexpr char shader_vertex[] = {
     #embed "shader.vert"
+    , '\0'
 };
 
-char shader_fragment[] = {
+constexpr char shader_fragment[] = {
     #embed "shader.frag"
+    , '\0'
 };
 
 [[nodiscard]] GLuint compile_shader(GLenum type, const char* src) {
