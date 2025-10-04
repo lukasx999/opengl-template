@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
