@@ -19,13 +19,13 @@ struct Vertex {
 };
 
 constexpr char shader_vertex[] = {
-    #embed "shader.vert"
-    , '\0'
+    #embed "shader.vert" suffix(,)
+    '\0'
 };
 
 constexpr char shader_fragment[] = {
-    #embed "shader.frag"
-    , '\0'
+    #embed "shader.frag" suffix(,)
+    '\0'
 };
 
 [[nodiscard]] GLuint compile_shader(GLenum type, const char* src) {
