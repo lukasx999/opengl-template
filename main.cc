@@ -76,7 +76,7 @@ constexpr char shader_fragment[] = {
     });
 
     glfwInit();
-    glfwWindowHint(GLFW_RESIZABLE, true);
+    glfwWindowHint(GLFW_RESIZABLE, false);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     GLFWwindow* window = glfwCreateWindow(width, height, window_title, nullptr, nullptr);
 
