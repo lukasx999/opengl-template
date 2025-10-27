@@ -14,11 +14,6 @@
 
 namespace {
 
-struct Vertex {
-    glm::vec3 m_pos;
-    Vertex(glm::vec3 pos) : m_pos(pos) { }
-};
-
 constexpr char shader_vertex[] = {
     #embed "shader.vert" suffix(,)
     '\0'
@@ -101,11 +96,11 @@ void process_inputs(GLFWwindow* window) {
 
 int main() {
 
-    std::array vertices {
-        Vertex({ -0.5f, -0.5f, 0.0f }), // bottom-left
-        Vertex({  0.5f, -0.5f, 0.0f }), // bottom-right
-        Vertex({  0.0f,  0.5f, 0.0f }), // top
-    };
+    auto vertices = std::to_array<glm::vec3>({
+        { -0.5f, -0.5f, 0.0f }, // bottom-left
+        {  0.5f, -0.5f, 0.0f }, // bottom-right
+        {  0.0f,  0.5f, 0.0f }, // top
+    });
 
     GLFWwindow* window = setup_glfw(1600, 900, "opengl template");
 
@@ -126,12 +121,12 @@ int main() {
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
 
     GLuint program = create_shader_program(shader_vertex, shader_fragment);
 
     GLuint a_pos = glGetAttribLocation(program, "a_pos");
-    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_pos)));
+    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, sizeof(glm::vec3), nullptr);
     glEnableVertexAttribArray(a_pos);
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
