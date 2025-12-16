@@ -140,10 +140,6 @@ int main() {
         frame_time = time - last_frame;
         last_frame = time;
 
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         std::println("FPS: {}", 1.0 / frame_time);
