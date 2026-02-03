@@ -32,8 +32,8 @@ constexpr char shader_fragment[] = {
     int success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
-        char info_log[512] = {0};
-        glGetShaderInfoLog(shader, sizeof info_log, nullptr, info_log);
+        std::array<char, 512> info_log;
+        glGetShaderInfoLog(shader, info_log.size(), nullptr, info_log.data());
         std::println(stderr, "shader compilation failed: {}", info_log);
         exit(EXIT_FAILURE);
     }
@@ -56,8 +56,8 @@ constexpr char shader_fragment[] = {
     int success;
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
-        char info_log[512] = {0};
-        glGetProgramInfoLog(program, sizeof info_log, nullptr, info_log);
+        std::array<char, 512> info_log;
+        glGetProgramInfoLog(program, info_log.size(), nullptr, info_log.data());
         std::println(stderr, "shader program linkage failed: {}", info_log);
         exit(EXIT_FAILURE);
     }
@@ -132,17 +132,8 @@ int main() {
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 
-    double frame_time = 0.0;
-    double last_frame = 0.0;
-
     while (!glfwWindowShouldClose(window)) {
-        double time = glfwGetTime();
-        frame_time = time - last_frame;
-        last_frame = time;
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        std::println("FPS: {}", 1.0 / frame_time);
 
         glUseProgram(program);
         glBindVertexArray(vertex_array);
