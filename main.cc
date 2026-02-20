@@ -9,8 +9,9 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
-#define GLAD_GL_IMPLEMENTATION
-#include <glad/gl.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 namespace {
 
@@ -77,7 +78,6 @@ constexpr char shader_fragment[] = {
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
-    gladLoadGL(glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(
         window, []([[maybe_unused]] GLFWwindow* win, int w, int h) {
             glViewport(0, 0, w, h);

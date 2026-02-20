@@ -9,6 +9,9 @@ include_directories(glad/include/)
 
 project(OpenGLTemplate)
 
+set(OpenGL_GL_PREFERENCE GLVND)
+find_package(OpenGL REQUIRED)
+
 add_executable(opengl-template main.cc)
-target_link_libraries(opengl-template PRIVATE glfw)
+target_link_libraries(opengl-template PRIVATE glfw OpenGL)
 target_compile_options(opengl-template PRIVATE "-Wno-c23-extensions")
